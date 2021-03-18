@@ -97,6 +97,17 @@ public class BinaryTree<E> implements Iterable<E>{
 		return result;
 	}
 
+	public E find(E findElement){
+		Iterator<E> iter = this.iterator();
+		while (iter.hasNext()){
+			Comparable<E> currentElement = (Comparable<E>) iter.next();
+			if(currentElement.compareTo(findElement) == 0){
+				return (E) currentElement;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public String toString() {
 		String result = "[";
