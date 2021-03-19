@@ -34,8 +34,8 @@ public class BinaryTree<E extends Comparable<E>> implements Iterable<E>{
 
 			if(next.getRight() != null) {
 				next = next.getRight();
-				while (next.getRight() != null)
-					next = next.getRight();
+				while (next.getLeft() != null)
+					next = next.getLeft();
 				return r.getObject();
 			}
 
@@ -76,9 +76,10 @@ public class BinaryTree<E extends Comparable<E>> implements Iterable<E>{
 					current.setRight(newElem);
 					return;
 				}
-				current= current.getLeft();
+				current= current.getRight();
 			} else {
 				current.setObject(element);
+				return;
 			}
 		}
 	}
@@ -141,7 +142,7 @@ public class BinaryTree<E extends Comparable<E>> implements Iterable<E>{
 			return new Element[]{currentElement, parent};
 	}
 
-	    public boolean remove(int value) {
+	    public boolean remove(E value) {
         Element removed = new Element(value);
         Element[] sp = searchWithParent(removed);      // sp[0] - searched, sp[1] - parent
 
