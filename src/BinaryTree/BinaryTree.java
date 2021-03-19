@@ -122,36 +122,76 @@ public class BinaryTree<E extends Comparable<E>> implements Iterable<E>{
 
         // NOT recursive searching
     private Element[] searchWithParent(Element searched) {
+		try {
 //		Comparable<E> currentValue = root.getObject();
-		Element currentElement = root;
-		Comparable<E> currentValue = currentElement.getObject();
-		Element parent = null;
+			Element currentElement = root;
+			Comparable<E> currentValue = currentElement.getObject();
+			Element parent = null;
 
 
-		while (currentElement != null) {
-			// value of searched node > current
-			if ((searched.getObject().compareTo(currentValue)) > 0) {
+			while (currentElement != null) {
+				// value of searched node > current
+				if ((searched.getObject().compareTo(currentValue)) > 0) {
 
-				parent = currentElement;
-				currentElement = currentElement.getRight();
-				currentValue = currentElement.getObject();
-				continue;
-			}
-			// value of searched node < current
-			if ((searched.getObject().compareTo(currentValue)) < 0) {
-				parent = currentElement;
-				currentElement = currentElement.getLeft();
-				currentValue = currentElement.getObject();
-				continue;
-			}
-			// element is found, current != null
-			if ((searched.getObject().compareTo(currentValue)) == 0){
-				break;
+					parent = currentElement;
+					currentElement = currentElement.getRight();
+					currentValue = currentElement.getObject();
+					continue;
+				}
+				// value of searched node < current
+				if ((searched.getObject().compareTo(currentValue)) < 0) {
+					parent = currentElement;
+					currentElement = currentElement.getLeft();
+					currentValue = currentElement.getObject();
+					continue;
+				}
+				// element is found, current != null
+				if ((searched.getObject().compareTo(currentValue)) == 0) {
+					break;
+				}
+				return new Element[]{currentElement, parent};
 			}
 			return new Element[]{currentElement, parent};
+		} catch (NullPointerException e){
+			throw new IllegalArgumentException("Unable to find element", e);
 		}
-			return new Element[]{currentElement, parent};
 	}
+
+		private Element findBiggest(Element root){
+				if(root.getRight() == null){
+					return root;
+				} else {
+					return findBiggest(root.getRight());
+				}
+		}
+
+		private boolean removeRoot(){
+			if(this.root.getLeft() == null && this.root.getRight() == null){
+				this.root = null;
+				return true;
+			}
+
+			if(this.root.getLeft() == null && this.root.getRight() != null){
+				this.root = this.root.getRight();
+				this.root.setParent(null);
+				return true;
+			}
+
+			if(this.root.getLeft() != null && this.root.getRight() == null){
+				this.root = this.root.getLeft();
+				this.root.setParent(null);
+				return true;
+			}
+
+			if(this.root.getLeft() != null && this.root.getRight() != null){
+				Element leftBiggest = this.findBiggest(this.root.getLeft());
+				this.root.getRight().setParent(leftBiggest);
+				leftBiggest.setRight(this.root.getRight());
+				this.root = this.root.getLeft();
+				this.root.setParent(null);
+			}
+			return false;
+		}
 
 	    public boolean remove(E value) {
         Element removed = new Element(value);
@@ -163,6 +203,10 @@ public class BinaryTree<E extends Comparable<E>> implements Iterable<E>{
         if (removed == null) {                      // node is not found
             return false;
         }
+
+        if (parent == null) {
+        	return this.removeRoot();
+		}
 
 
         // Case 1: if there are no children to the right, left child stands on removed place
@@ -240,6 +284,9 @@ public class BinaryTree<E extends Comparable<E>> implements Iterable<E>{
 
 	@Override
 	public String toString() {
+		if(this.root == null){
+			return "[ ]";
+		}
 		String result = "[";
 		Iterator<E> iter = this.iterator();
 		while (iter.hasNext()){
