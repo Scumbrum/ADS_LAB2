@@ -99,12 +99,23 @@ public class BinaryTree<E extends Comparable<E>> implements Iterable<E>{
 	}
 
 	public E find(E findElement){
-		Iterator<E> iter = this.iterator();
-		while (iter.hasNext()){
-			Comparable<E> currentElement = (Comparable<E>) iter.next();
-			if(currentElement.compareTo(findElement) == 0){
-				return (E) currentElement;
-			}
+		if(this.root == null){
+			return null;
+		}
+		return findFrom(this.root, findElement);
+	}
+
+	private E findFrom(Element start, E findElement){
+		if(start == null){
+			return null;
+		}
+		switch (findElement.compareTo((E) start.getObject())){
+			case 0:
+				return (E) start.getObject();
+			case -1:
+				return findFrom(start.getLeft(), findElement);
+			case 1:
+				return findFrom(start.getRight(), findElement);
 		}
 		return null;
 	}
