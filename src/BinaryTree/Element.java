@@ -1,6 +1,6 @@
 package src.BinaryTree;
 
-class Element<E> {
+class Element<E extends Comparable<E>> {
 	private E object;
 	private Element<E> left;
 	private Element<E> right;
